@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 #define LOG_TAG "ClearKeyCryptoPlugin"
 #include <utils/Log.h>
 
+//#include <openssl/aes.h>
+
+#ifndef USE_AES_TA
 #include <openssl/aes.h>
+#include <openssl/evp.h>
+#else
+extern "C" {
+#include "aes_crypto.h"
+}
+
+/* Map between OP TEE TA and OpenSSL */
+#define AES_BLOCK_SIZE CTR_AES_BLOCK_SIZE
+#endif
 
 #include "AesCtrDecryptor.h"
 
@@ -37,9 +49,12 @@ android::status_t AesCtrDecryptor::decrypt(const android::Vector<uint8_t>& key,
     memset(previousEncryptedCounter, 0, kBlockSize);
 
     size_t offset = 0;
+    Iv opensslIv;
+
+#ifndef USE_AES_TA
     AES_KEY opensslKey;
     AES_set_encrypt_key(key.array(), kBlockBitCount, &opensslKey);
-    Iv opensslIv;
+#endif
     memcpy(opensslIv, iv, sizeof(opensslIv));
 
     for (size_t i = 0; i < numSubSamples; ++i) {
@@ -52,15 +67,23 @@ android::status_t AesCtrDecryptor::decrypt(const android::Vector<uint8_t>& key,
         }
 
         if (subSample.mNumBytesOfEncryptedData > 0) {
+#ifndef USE_AES_TA
             AES_ctr128_encrypt(source + offset, destination + offset,
                     subSample.mNumBytesOfEncryptedData, &opensslKey,
                     opensslIv, previousEncryptedCounter,
                     &blockOffset);
+#else
+            TEE_AES_ctr128_encrypt(source + offset, destination + offset,
+                    subSample.mNumBytesOfEncryptedData, (const char*)key.array(),
+                    opensslIv, previousEncryptedCounter,
+                    &blockOffset);
+#endif
             offset += subSample.mNumBytesOfEncryptedData;
         }
     }
 
     *bytesDecryptedOut = offset;
+
     return android::OK;
 }
 
