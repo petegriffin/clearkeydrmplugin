@@ -22,6 +22,14 @@
 
 #include "SessionLibrary.h"
 
+#ifdef USE_AES_TA
+
+extern "C" {
+#include "aes_crypto.h"
+}
+
+#endif
+
 namespace clearkeydrm {
 
 using android::Mutex;
@@ -54,6 +62,11 @@ sp<Session> SessionLibrary::createSession() {
             sessionIdString.size());
 
     mSessions.add(sessionId, new Session(sessionId));
+
+#ifdef USE_AES_TA
+        TEE_crypto_init();
+        ALOGD("%s:Session created.", __func__);
+#endif
     return mSessions.valueFor(sessionId);
 }
 
@@ -69,6 +82,12 @@ sp<Session> SessionLibrary::findSession(
 void SessionLibrary::destroySession(const sp<Session>& session) {
     Mutex::Autolock lock(mSessionsLock);\
     mSessions.removeItem(session->sessionId());
+#ifdef USE_AES_TA
+    TEE_crypto_close();
+    ALOGD("%s:Session destroy.", __func__);
+#endif
+
+
 }
 
 } // namespace clearkeydrm
