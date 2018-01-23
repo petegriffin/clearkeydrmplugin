@@ -19,7 +19,7 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := ClearKeyDrmUnitTest
+LOCAL_MODULE := ClearKeyOPTEEDrmUnitTest
 LOCAL_MODULE_TAGS := tests
 
 LOCAL_SRC_FILES := \
@@ -29,13 +29,13 @@ LOCAL_SRC_FILES := \
 
 LOCAL_C_INCLUDES := \
     external/jsmn \
-    frameworks/av/drm/mediadrm/plugins/clearkey \
-    frameworks/av/include \
-    frameworks/native/include \
+    $(LOCAL_PATH)/../ \
+    $(TOP)/frameworks/av/include \
+    $(TOP)/frameworks/native/include \
 
 LOCAL_SHARED_LIBRARIES := \
     libcrypto \
-    libdrmclearkeyplugin \
+    libdrmclearkeyopteeplugin \
     liblog \
     libstagefright_foundation \
     libutils \

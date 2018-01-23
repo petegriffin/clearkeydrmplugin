@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 LOCAL_PATH:= $(call my-dir)
+TA_PATH:= $(LOCAL_PATH)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
@@ -32,11 +33,13 @@ LOCAL_SRC_FILES := \
 
 LOCAL_C_INCLUDES := \
     external/jsmn \
-    frameworks/av/drm/mediadrm/plugins/clearkey \
-    frameworks/av/include \
-    frameworks/native/include \
+    $(TOP)/frameworks/av/include \
+    $(TOP)/frameworks/native/include \
+    $(LOCAL_PATH)/optee-clearkey-cdmi/host
 
-LOCAL_MODULE := libdrmclearkeyplugin
+LOCAL_MODULE := libdrmclearkeyopteeplugin
+
+LOCAL_CFLAGS +=  -DUSE_AES_TA
 
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_MODULE_RELATIVE_PATH := mediadrm
@@ -46,6 +49,7 @@ LOCAL_SHARED_LIBRARIES := \
     liblog \
     libstagefright_foundation \
     libutils \
+    libtee_aes
 
 LOCAL_STATIC_LIBRARIES := \
     libjsmn \
@@ -58,3 +62,8 @@ include $(BUILD_SHARED_LIBRARY)
 # Build unit tests
 
 include $(LOCAL_PATH)/tests/Android.mk
+
+#########################################################################
+# Build TA
+
+include $(TA_PATH)/optee-clearkey-cdmi/Android.mk
