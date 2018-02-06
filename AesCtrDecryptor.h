@@ -33,7 +33,7 @@ public:
     android::status_t decrypt(const android::Vector<uint8_t>& key, const Iv iv,
             const uint8_t* source, uint8_t* destination,
             const SubSample* subSamples, size_t numSubSamples,
-            size_t* bytesDecryptedOut);
+	    size_t* bytesDecryptedOut, bool secure);
 
 private:
     DISALLOW_EVIL_CONSTRUCTORS(AesCtrDecryptor);
