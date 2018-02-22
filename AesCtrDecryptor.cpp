@@ -38,6 +38,18 @@ namespace clearkeydrm {
 
 static const size_t kBlockBitCount = kBlockSize * 8;
 
+AesCtrDecryptor::AesCtrDecryptor() {
+#ifdef USE_AES_TA
+  TEE_crypto_init();
+#endif
+}
+
+AesCtrDecryptor::~AesCtrDecryptor() {
+#ifdef USE_AES_TA
+  TEE_crypto_close();
+#endif
+}
+
 android::status_t AesCtrDecryptor::decrypt(const android::Vector<uint8_t>& key,
         const Iv iv, const uint8_t* source,
         uint8_t* destination,
