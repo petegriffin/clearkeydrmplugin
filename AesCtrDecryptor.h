@@ -28,7 +28,8 @@ namespace clearkeydrm {
 
 class AesCtrDecryptor {
 public:
-    AesCtrDecryptor() {}
+    AesCtrDecryptor();
+    ~AesCtrDecryptor();
 
     android::status_t decrypt(const android::Vector<uint8_t>& key, const Iv iv,
             const uint8_t* source, uint8_t* destination,
