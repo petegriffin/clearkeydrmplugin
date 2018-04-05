@@ -76,7 +76,7 @@ android::status_t AesCtrDecryptor::decrypt(const android::Vector<uint8_t>& key,
         if (subSample.mNumBytesOfClearData > 0) {
 #ifdef USE_AES_TA
 	  if (secure)
-	    TEE_copy_secure_memory(destination, source,
+	    TEE_copy_secure_memory(source, destination,
 				   subSample.mNumBytesOfClearData, offset);
 	  else
 #endif

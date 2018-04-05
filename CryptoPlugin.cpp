@@ -64,8 +64,8 @@ ssize_t CryptoPlugin::decrypt(bool secure, const KeyId keyId, const Iv iv,
                        reinterpret_cast<const uint8_t*>(srcPtr) + offset,
                        subSample.mNumBytesOfClearData);
 	      else
-		TEE_copy_secure_memory(reinterpret_cast<const uint8_t*>(dstPtr),
-				       reinterpret_cast<const uint8_t*>(srcPtr),
+		TEE_copy_secure_memory(reinterpret_cast<const uint8_t*>(srcPtr),
+				       reinterpret_cast<uint8_t*>(dstPtr),
 				       subSample.mNumBytesOfClearData, offset);
 
 	      offset += subSample.mNumBytesOfClearData;
