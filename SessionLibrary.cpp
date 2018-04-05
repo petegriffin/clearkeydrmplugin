@@ -44,7 +44,7 @@ SessionLibrary* SessionLibrary::get() {
     Mutex::Autolock lock(sSingletonLock);
 
     if (sSingleton == NULL) {
-        ALOGD("Instantiating Session Library Singleton.");
+        ALOGD("Instantiating Session Library Singleton ClearKeyOPTEE Plugin.");
         sSingleton = new SessionLibrary();
     }
 
